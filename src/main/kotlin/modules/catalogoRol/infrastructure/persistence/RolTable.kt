@@ -1,6 +1,6 @@
 package com.finanzasana.modules.catalogoRol.infrastructure.persistence
-import org.jetbrains.exposed.sql.Table
 
+import org.jetbrains.exposed.sql.Table
 
 object RolTable : Table("rol") {
     val id = integer("id_rol").autoIncrement()
@@ -8,5 +8,3 @@ object RolTable : Table("rol") {
 
     override val primaryKey = PrimaryKey(id)
 }
-
-

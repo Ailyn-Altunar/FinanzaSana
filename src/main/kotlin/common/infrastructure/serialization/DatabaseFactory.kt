@@ -1,9 +1,7 @@
-package com.finanzasana.common.infrastructure
+package com.finanzasana.common.infrastructure.serialization
 
+import com.finanzasana.modules.catalogoRol.infrastructure.persistence.RolTable
 import com.finanzasana.modules.usuarios.infrastructure.persistence.UsuarioTable
-import com.finanzasana.modules.deudas.infrastructure.persistence.DeudaTable
-import com.finanzasana.modules.categorias.infrastructure.persistence.CategoriaTable
-
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
@@ -17,10 +15,10 @@ object DatabaseFactory {
             driverClassName = "org.postgresql.Driver"
 
             jdbcUrl = System.getenv("DB_URL")
-                ?: "jdbc:postgresql://localhost:5432/finanza_sana"
+                ?: "jdbc:postgresql://localhost:5432/finanzasana"
 
             username = System.getenv("DB_USER") ?: "postgres"
-            password = System.getenv("DB_PASSWORD") ?: "root"
+            password = System.getenv("DB_PASSWORD") ?: "lyn250319"
 
             maximumPoolSize = 10
             isAutoCommit = false
@@ -33,8 +31,8 @@ object DatabaseFactory {
         transaction {
             SchemaUtils.create(
                 UsuarioTable,
-                DeudaTable,
-                CategoriaTable
+                RolTable,
+
             )
         }
     }

@@ -44,11 +44,11 @@ class PostgresUsuarioRepository : UsuarioRepository {
 
     override suspend fun guardar(usuario: Usuario): Usuario = newSuspendedTransaction {
         val nuevoId = UsuarioTable.insert {
-            it[nombre] = usuario.nombre
-            it[email] = usuario.email
-            it[contrasena] = usuario.contrasena
-            it[edad] = usuario.edad
-            it[idRol] = usuario.idRol
+            it[UsuarioTable.nombre] = usuario.nombre
+            it[UsuarioTable.email] = usuario.email
+            it[UsuarioTable.contrasena] = usuario.contrasena
+            it[UsuarioTable.edad] = usuario.edad
+            it[UsuarioTable.idRol] = usuario.idRol
         }[UsuarioTable.id]
 
         verPorId(nuevoId)!!
@@ -56,10 +56,10 @@ class PostgresUsuarioRepository : UsuarioRepository {
 
     override suspend fun actualizar(usuario: Usuario): Usuario? = newSuspendedTransaction {
         UsuarioTable.update({ UsuarioTable.id eq usuario.id!! }) {
-            it[nombre] = usuario.nombre
-            it[email] = usuario.email
-            it[edad] = usuario.edad
-            it[idRol] = usuario.idRol
+            it[UsuarioTable.nombre] = usuario.nombre
+            it[UsuarioTable.email] = usuario.email
+            it[UsuarioTable.edad] = usuario.edad
+            it[UsuarioTable.idRol] = usuario.idRol
         }
         verPorId(usuario.id!!)
     }
