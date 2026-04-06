@@ -3,14 +3,12 @@ package com.finanzasana.modules.catalogoRol.infrastructure.rest
 import com.finanzasana.modules.catalogoRol.application.usecase.ListarRolesUseCase
 import com.finanzasana.modules.catalogoRol.application.usecase.VerRolUseCase
 import com.finanzasana.modules.catalogoRol.infrastructure.rest.dto.RolResponse
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 fun Route.rolRouting() {
 
-    // Inyección de dependencias con Koin
     val listarRoles: ListarRolesUseCase by inject()
     val verRol: VerRolUseCase by inject()
 

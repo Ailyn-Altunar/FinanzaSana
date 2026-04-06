@@ -7,12 +7,11 @@ import org.koin.dsl.module
 
 val usuarioModule = module {
 
-    // Casos de uso
     factory { LoginUseCase(get()) }
     factory { RegistrarUsuarioUseCase(get()) }
     factory { VerPerfilUseCase(get()) }
     factory { VerUsuariosAdminUseCase(get()) }
 
-    // Repositorio
+
     single<UsuarioRepository> { PostgresUsuarioRepository() }
 }

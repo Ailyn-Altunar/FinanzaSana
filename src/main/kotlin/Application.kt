@@ -1,5 +1,6 @@
 package com.finanzasana
 
+import com.finanzasana.common.infrastructure.security.configureSecurity
 import com.finanzasana.common.infrastructure.serialization.DatabaseFactory
 import com.finanzasana.modules.usuarios.usuarioModule
 import com.finanzasana.modules.catalogoRol.rolModule
@@ -12,19 +13,12 @@ import io.ktor.serialization.kotlinx.json.*
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
-fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
-}
-
 fun Application.module() {
 
     DatabaseFactory.init()
 
-
-    // Seguridad (si ya la tienes configurada)
-    configureSecurity()
-
-    // 1. Inyección de dependencias con Koin
+    // 2. Inyección de dependencias (Koin)
+    // Debe ir antes de Seguridad y Routing por si necesitas inyectar algo ahí
     install(Koin) {
         slf4jLogger()
         modules(
@@ -33,15 +27,17 @@ fun Application.module() {
         )
     }
 
-    // 2. Serialización JSON
+    // 3. Serialización JSON (Necesaria para que Auth pueda leer/escribir respuestas)
     install(ContentNegotiation) {
         json()
     }
 
-    // 3. Rutas
+
+    configureSecurity()
+
+
     routing {
         usuarioRouting()
         rolRouting()
-
     }
 }

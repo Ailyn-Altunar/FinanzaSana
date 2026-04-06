@@ -14,15 +14,15 @@ fun Application.configureSecurity() {
 
             validate { credential ->
 
-                // Extraemos los claims que guardamos en el token
+
                 val id = credential.payload.getClaim("id").asInt()
                 val rol = credential.payload.getClaim("idRol").asInt()
 
-                // Si ambos existen, el token es válido
+
                 if (id != null && rol != null) {
                     JWTPrincipal(credential.payload)
                 } else {
-                    null   // Token inválido → acceso denegado
+                    null
                 }
             }
         }

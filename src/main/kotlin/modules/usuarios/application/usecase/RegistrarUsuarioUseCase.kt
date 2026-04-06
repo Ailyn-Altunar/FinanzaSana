@@ -11,31 +11,25 @@ class RegistrarUsuarioUseCase(
     suspend fun ejecutar(
         nombre: String,
         email: String,
-        contrasena: String,
-        edad: Int,
+        contraseña: String,
         idRol: Int
     ): Usuario {
 
-        // 1. Validar que el email no exista
         val existente = usuarioRepository.verPorEmail(email)
         if (existente != null) {
             throw IllegalArgumentException("El email ya está registrado")
         }
 
-        // 2. Hashear la contraseña
-        val contrasenaHasheada = BCrypt.hashpw(contrasena, BCrypt.gensalt())
+        val contraseñaHasheada = BCrypt.hashpw(contraseña, BCrypt.gensalt())
 
-        // 3. Crear el modelo de dominio
         val usuario = Usuario(
             nombre = nombre,
             email = email,
-            contrasena = contrasenaHasheada,
-            edad = edad,
+            contraseña = contraseñaHasheada,
             idRol = idRol,
             nombreRol = obtenerNombreRol(idRol)
         )
 
-        // 4. Guardar en la BD
         return usuarioRepository.guardar(usuario)
     }
 
@@ -43,7 +37,6 @@ class RegistrarUsuarioUseCase(
         when (idRol) {
             1 -> "ADMIN"
             2 -> "CLIENTE"
-            3 -> "SUPERADMIN"
             else -> "DESCONOCIDO"
         }
 }

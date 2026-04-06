@@ -26,7 +26,7 @@ fun Route.usuarioRouting() {
         post("/login") {
             val request = call.receive<LoginRequest>()
             val usuario = try {
-                loginUseCase.ejecutar(request.email, request.contrasena)
+                loginUseCase.ejecutar(request.email, request.contraseña)
             } catch (e: Exception) {
                 return@post call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Credenciales incorrectas"))
             }
@@ -71,7 +71,7 @@ fun Route.usuarioRouting() {
                 }
 
                 val nuevo = registrarUsuarioUseCase.ejecutar(
-                    request.nombre, request.email, request.contrasena, request.edad, request.idRol
+                    request.nombre, request.email, request.contraseña, request.idRol
                 )
                 call.respond(HttpStatusCode.Created, nuevo.toResponse())
             }

@@ -20,8 +20,7 @@ class PostgresUsuarioRepository : UsuarioRepository {
         id = row[UsuarioTable.id],
         nombre = row[UsuarioTable.nombre],
         email = row[UsuarioTable.email],
-        contrasena = row[UsuarioTable.contrasena],
-        edad = row[UsuarioTable.edad] ?: 0,
+        contraseña = row[UsuarioTable.contraseña],
         idRol = row[UsuarioTable.idRol],
         nombreRol = row[RolTable.nombre]
     )
@@ -46,8 +45,7 @@ class PostgresUsuarioRepository : UsuarioRepository {
         val nuevoId = UsuarioTable.insert {
             it[UsuarioTable.nombre] = usuario.nombre
             it[UsuarioTable.email] = usuario.email
-            it[UsuarioTable.contrasena] = usuario.contrasena
-            it[UsuarioTable.edad] = usuario.edad
+            it[UsuarioTable.contraseña] = usuario.contraseña
             it[UsuarioTable.idRol] = usuario.idRol
         }[UsuarioTable.id]
 
@@ -58,7 +56,6 @@ class PostgresUsuarioRepository : UsuarioRepository {
         UsuarioTable.update({ UsuarioTable.id eq usuario.id!! }) {
             it[UsuarioTable.nombre] = usuario.nombre
             it[UsuarioTable.email] = usuario.email
-            it[UsuarioTable.edad] = usuario.edad
             it[UsuarioTable.idRol] = usuario.idRol
         }
         verPorId(usuario.id!!)

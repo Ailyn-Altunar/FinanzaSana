@@ -3,7 +3,6 @@ package com.finanzasana.modules.catalogoRol.infrastructure.persistence
 import com.finanzasana.modules.catalogoRol.domain.model.Rol
 import com.finanzasana.modules.catalogoRol.domain.repository.RolRepository
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class PostgresRolRepository : RolRepository {

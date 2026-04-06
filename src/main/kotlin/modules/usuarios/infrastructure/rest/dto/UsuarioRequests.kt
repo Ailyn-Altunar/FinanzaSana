@@ -7,15 +7,13 @@ import kotlinx.serialization.Serializable
 data class UsuarioRequest(
     val nombre: String,
     val email: String,
-    val contrasena: String,
-    val edad: Int,
-    val idRol: Int // 1 = Admin, 2 = Cliente, 3 = SuperAdmin
+    val contraseña: String,
+    val idRol: Int
 ) {
     fun toDomain() = Usuario(
         nombre = nombre,
         email = email,
-        contrasena = contrasena,
-        edad = edad,
+        contraseña = contraseña,
         idRol = idRol
     )
 }

@@ -8,10 +8,8 @@ import org.koin.dsl.module
 
 val rolModule = module {
 
-    // Casos de uso
     factory { ListarRolesUseCase(get()) }
     factory { VerRolUseCase(get()) }
 
-    // Repositorio
     single<RolRepository> { PostgresRolRepository() }
 }
