@@ -4,6 +4,7 @@ import com.finanzasana.modules.usuarios.domain.model.Usuario
 
 interface UsuarioRepository {
 
+
     suspend fun verPorId(id: Int): Usuario?
 
     suspend fun verPorEmail(email: String): Usuario?

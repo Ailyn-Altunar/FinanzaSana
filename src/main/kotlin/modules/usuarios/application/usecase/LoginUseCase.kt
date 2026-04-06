@@ -12,8 +12,8 @@ class LoginUseCase(
         val usuario = usuarioRepository.verPorEmail(email)
             ?: throw IllegalArgumentException("El usuario no existe")
 
-        val contraseñaValida = BCrypt.checkpw(contrasena, usuario.contrasena)
-        if (!contraseñaValida) {
+        val contrasenaValida = BCrypt.checkpw(contrasena, usuario.contrasena)
+        if (!contrasenaValida) {
             throw IllegalArgumentException("Contraseña incorrecta")
         }
 

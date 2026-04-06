@@ -7,7 +7,7 @@ object UsuarioTable : Table("usuarios") {
     val id = integer("id_usuario").autoIncrement()
     val nombre = varchar("nombre", 100)
     val email = varchar("email", 200).uniqueIndex()
-    val contrasena = varchar("contraseña", 255)
+    val contrasena = varchar("contrasena", 255)
     val idRol = integer("id_rol")
 
     override val primaryKey = PrimaryKey(id)
