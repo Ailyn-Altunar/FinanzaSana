@@ -20,7 +20,7 @@ class PostgresUsuarioRepository : UsuarioRepository {
         id = row[UsuarioTable.id],
         nombre = row[UsuarioTable.nombre],
         email = row[UsuarioTable.email],
-        contraseña = row[UsuarioTable.contraseña],
+        contrasena = row[UsuarioTable.contrasena],
         idRol = row[UsuarioTable.idRol],
         nombreRol = row[RolTable.nombre]
     )
@@ -45,7 +45,7 @@ class PostgresUsuarioRepository : UsuarioRepository {
         val nuevoId = UsuarioTable.insert {
             it[UsuarioTable.nombre] = usuario.nombre
             it[UsuarioTable.email] = usuario.email
-            it[UsuarioTable.contraseña] = usuario.contraseña
+            it[UsuarioTable.contrasena] = usuario.contrasena
             it[UsuarioTable.idRol] = usuario.idRol
         }[UsuarioTable.id]
 

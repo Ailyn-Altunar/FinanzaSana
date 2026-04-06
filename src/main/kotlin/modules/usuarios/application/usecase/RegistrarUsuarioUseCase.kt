@@ -11,7 +11,7 @@ class RegistrarUsuarioUseCase(
     suspend fun ejecutar(
         nombre: String,
         email: String,
-        contraseña: String,
+        contrasena: String,
         idRol: Int
     ): Usuario {
 
@@ -20,12 +20,12 @@ class RegistrarUsuarioUseCase(
             throw IllegalArgumentException("El email ya está registrado")
         }
 
-        val contraseñaHasheada = BCrypt.hashpw(contraseña, BCrypt.gensalt())
+        val contrasenaHasheada = BCrypt.hashpw(contrasena, BCrypt.gensalt())
 
         val usuario = Usuario(
             nombre = nombre,
             email = email,
-            contraseña = contraseñaHasheada,
+            contrasena = contrasenaHasheada,
             idRol = idRol,
             nombreRol = obtenerNombreRol(idRol)
         )

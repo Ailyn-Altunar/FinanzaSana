@@ -1,9 +1,7 @@
-val kotlin_version: String by project
-val logback_version: String by project
-
 plugins {
-    kotlin("jvm") version "2.3.0"
-    id("io.ktor.plugin") version "3.4.2"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktor)
 }
 
 group = "com.finanzasana"
@@ -19,41 +17,34 @@ kotlin {
 
 dependencies {
     // Ktor Core
-    implementation("io.ktor:ktor-server-core")
-    implementation("io.ktor:ktor-server-netty")
-    implementation("io.ktor:ktor-server-content-negotiation")
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
-    implementation("io.ktor:ktor-server-cors")
-    implementation("io.ktor:ktor-server-auth")
-    implementation("io.ktor:ktor-server-auth-jwt")
-    implementation("io.ktor:ktor-server-config-yaml")
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.config.yaml)
 
-// Logging
-    implementation("ch.qos.logback:logback-classic:$logback_version")
+    // Logging
+    implementation(libs.logback.classic)
 
-// Koin (inyección de dependencias)
-    implementation("io.insert-koin:koin-ktor:3.5.0")
-    implementation("io.insert-koin:koin-logger-slf4j:3.5.0")
+    // Koin
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger.slf4j)
 
-// PostgreSQL
-    implementation("org.postgresql:postgresql:42.7.3")
+    // Exposed ORM
+    implementation(libs.bundles.exposed)
 
-// Exposed ORM
-    implementation("org.jetbrains.exposed:exposed-core:0.53.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.53.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.53.0")
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.53.0")
+    // Base de datos
+    implementation(libs.postgresql)
+    implementation(libs.hikaricp)
 
-// HikariCP (pool de conexiones)
-    implementation("com.zaxxer:HikariCP:5.1.0")
+    // Seguridad
+    implementation(libs.bcrypt)
+    implementation(libs.jwt.auth0)
 
-// BCrypt (para contraseñas)
-    implementation("org.mindrot:jbcrypt:0.4")
-
-// Testing
-    testImplementation("io.ktor:ktor-server-test-host")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-
-
-    implementation("com.auth0:java-jwt:4.4.0")
+    // Testing
+    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.kotlin.test.junit)
 }
