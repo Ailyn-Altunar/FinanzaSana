@@ -10,18 +10,18 @@ class PostgresRolRepository : RolRepository {
     override suspend fun listar(): List<Rol> = newSuspendedTransaction {
         RolTable.selectAll().map { row ->
             Rol(
-                id = row[RolTable.id],
+                idRol = row[RolTable.idRol],
                 nombre = row[RolTable.nombre]
             )
         }
     }
 
-    override suspend fun verPorId(id: Int): Rol? = newSuspendedTransaction {
+    override suspend fun verPorId(idRol: Int): Rol? = newSuspendedTransaction {
         RolTable
-            .select { RolTable.id eq id }
+            .select { RolTable.idRol eq idRol }
             .map { row ->
                 Rol(
-                    id = row[RolTable.id],
+                    idRol = row[RolTable.idRol],
                     nombre = row[RolTable.nombre]
                 )
             }

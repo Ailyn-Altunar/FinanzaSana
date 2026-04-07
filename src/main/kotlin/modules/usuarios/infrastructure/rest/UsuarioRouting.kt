@@ -1,10 +1,12 @@
 package com.finanzasana.modules.usuarios.infrastructure.rest
 
+import com.finanzasana.common.infrastructure.security.JwtConfig
 import com.finanzasana.modules.usuarios.application.usecase.LoginUseCase
 import com.finanzasana.modules.usuarios.application.usecase.RegistrarUsuarioUseCase
 import com.finanzasana.modules.usuarios.application.usecase.VerPerfilUseCase
 import com.finanzasana.modules.usuarios.application.usecase.VerUsuariosAdminUseCase
 import com.finanzasana.modules.usuarios.infrastructure.rest.dto.LoginRequest
+import com.finanzasana.modules.usuarios.infrastructure.rest.dto.LoginResponse
 import com.finanzasana.modules.usuarios.infrastructure.rest.dto.UsuarioRequest
 import com.finanzasana.modules.usuarios.infrastructure.rest.dto.toResponse
 import io.ktor.http.*
@@ -25,14 +27,28 @@ fun Route.usuarioRouting() {
     route("/auth") {
         post("/login") {
             val request = call.receive<LoginRequest>()
+
             val usuario = try {
                 loginUseCase.ejecutar(request.email, request.contrasena)
             } catch (e: Exception) {
-                return@post call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Credenciales incorrectas"))
+                return@post call.respond(
+                    HttpStatusCode.Unauthorized,
+                    mapOf("error" to "Credenciales incorrectas")
+                )
             }
-            call.respond(HttpStatusCode.OK, usuario.toResponse())
+
+            val token = JwtConfig.generateToken(usuario)
+
+            call.respond(
+                HttpStatusCode.OK,
+                LoginResponse(
+                    token = token,
+                    usuario = usuario.toResponse()
+                )
+            )
         }
     }
+
 
     // RUTAS PROTEGIDAS: Requieren Token
     authenticate("auth-jwt") {

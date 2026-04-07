@@ -15,7 +15,7 @@ fun Route.rolRouting() {
     route("/roles") {
 
         get {
-            val roles = listarRoles().map { RolResponse(it.id, it.nombre) }
+            val roles = listarRoles().map { RolResponse(it.idRol, it.nombre) }
             call.respond(roles)
         }
 
@@ -30,7 +30,7 @@ fun Route.rolRouting() {
             if (rol == null) {
                 call.respond("Rol no encontrado")
             } else {
-                call.respond(RolResponse(rol.id, rol.nombre))
+                call.respond(RolResponse(rol.idRol, rol.nombre))
             }
         }
     }

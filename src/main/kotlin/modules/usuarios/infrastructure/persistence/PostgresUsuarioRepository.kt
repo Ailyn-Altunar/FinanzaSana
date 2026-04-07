@@ -13,7 +13,7 @@ class PostgresUsuarioRepository : UsuarioRepository {
         RolTable,
         joinType = JoinType.INNER,
         onColumn = UsuarioTable.idRol,
-        otherColumn = RolTable.id
+        otherColumn = RolTable.idRol
     )
 
     private fun toDomainConRol(row: ResultRow): Usuario = Usuario(
@@ -49,7 +49,13 @@ class PostgresUsuarioRepository : UsuarioRepository {
             it[UsuarioTable.idRol] = usuario.idRol
         }[UsuarioTable.id]
 
-        verPorId(nuevoId)!!
+
+
+        UsuariosConRoles()
+            .select { UsuarioTable.id eq nuevoId }
+            .map { toDomainConRol(it) }
+            .singleOrNull()
+            ?: throw IllegalStateException("El usuario se insertó con ID $nuevoId pero no se pudo recuperar")
     }
 
     override suspend fun actualizar(usuario: Usuario): Usuario? = newSuspendedTransaction {
