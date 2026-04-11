@@ -5,10 +5,7 @@ import com.finanzasana.modules.usuarios.application.usecase.LoginUseCase
 import com.finanzasana.modules.usuarios.application.usecase.RegistrarUsuarioUseCase
 import com.finanzasana.modules.usuarios.application.usecase.VerPerfilUseCase
 import com.finanzasana.modules.usuarios.application.usecase.VerUsuariosAdminUseCase
-import com.finanzasana.modules.usuarios.infrastructure.rest.dto.LoginRequest
-import com.finanzasana.modules.usuarios.infrastructure.rest.dto.LoginResponse
-import com.finanzasana.modules.usuarios.infrastructure.rest.dto.UsuarioRequest
-import com.finanzasana.modules.usuarios.infrastructure.rest.dto.toResponse
+import com.finanzasana.modules.usuarios.infrastructure.rest.dto.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -18,13 +15,21 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 fun Route.usuarioRouting() {
+
+    // ============================
+    // Inyección de dependencias
+    // ============================
     val loginUseCase by inject<LoginUseCase>()
     val registrarUsuarioUseCase by inject<RegistrarUsuarioUseCase>()
     val verPerfilUseCase by inject<VerPerfilUseCase>()
     val verUsuariosAdminUseCase by inject<VerUsuariosAdminUseCase>()
 
-    // RUTA PÚBLICA: Solo para entrar al sistema
+    // ============================
+    // RUTAS PÚBLICAS
+    // ============================
     route("/auth") {
+
+        // LOGIN
         post("/login") {
             val request = call.receive<LoginRequest>()
 
@@ -49,23 +54,26 @@ fun Route.usuarioRouting() {
         }
     }
 
-
-    // RUTAS PROTEGIDAS: Requieren Token
+    // ============================
+    // RUTAS PROTEGIDAS
+    // ============================
     authenticate("auth-jwt") {
         route("/usuarios") {
 
-            // CUALQUIERA LOGUEADO: Ver su propio perfil
+            // PERFIL DEL USUARIO LOGUEADO
             get("/perfil") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val id = principal.payload.getClaim("id").asInt()
+
                 val usuario = verPerfilUseCase.ejecutar(id)
                 call.respond(HttpStatusCode.OK, usuario.toResponse())
             }
 
-            // SOLO ADMIN: Ver lista de todos
+            // LISTA DE USUARIOS (solo admin)
             get("/lista") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idSolicitante = principal.payload.getClaim("id").asInt()
+
                 try {
                     val lista = verUsuariosAdminUseCase.ejecutar(idSolicitante)
                     call.respond(HttpStatusCode.OK, lista.map { it.toResponse() })
@@ -74,21 +82,29 @@ fun Route.usuarioRouting() {
                 }
             }
 
-            // SOLO ADMIN: Crear nuevo usuario
+            // CREAR USUARIO (solo admin)
             post("/crear") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idSolicitante = principal.payload.getClaim("id").asInt()
-                val request = call.receive<UsuarioRequest>()
 
-                // Verificamos rol antes de procesar
                 val solicitante = verPerfilUseCase.ejecutar(idSolicitante)
                 if (solicitante.idRol != 1) {
-                    return@post call.respond(HttpStatusCode.Forbidden, mapOf("error" to "No eres admin"))
+                    return@post call.respond(
+                        HttpStatusCode.Forbidden,
+                        mapOf("error" to "No tienes permisos para crear usuarios")
+                    )
                 }
 
+                val request = call.receive<UsuarioRequest>()
+
                 val nuevo = registrarUsuarioUseCase.ejecutar(
-                    request.nombre, request.email, request.contrasena, request.idRol
+                    nombre = request.nombre,
+                    email = request.email,
+                    contrasena = request.contrasena,
+                    idRol = request.idRol,
+                    telefono = request.telefono
                 )
+
                 call.respond(HttpStatusCode.Created, nuevo.toResponse())
             }
         }

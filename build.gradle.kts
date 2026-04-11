@@ -47,4 +47,6 @@ dependencies {
     // Testing
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+    implementation("org.jetbrains.exposed:exposed-java-time:0.50.1")
+
 }

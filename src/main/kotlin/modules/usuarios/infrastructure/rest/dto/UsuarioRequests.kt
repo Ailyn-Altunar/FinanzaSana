@@ -8,12 +8,14 @@ data class UsuarioRequest(
     val nombre: String,
     val email: String,
     val contrasena: String,
-    val idRol: Int
+    val idRol: Int,
+    val telefono: String
 ) {
     fun toDomain() = Usuario(
         nombre = nombre,
         email = email,
         contrasena = contrasena,
-        idRol = idRol
+        idRol = idRol,
+        telefono = telefono
     )
 }

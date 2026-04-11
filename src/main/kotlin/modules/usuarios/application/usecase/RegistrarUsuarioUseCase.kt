@@ -12,7 +12,8 @@ class RegistrarUsuarioUseCase(
         nombre: String,
         email: String,
         contrasena: String,
-        idRol: Int
+        idRol: Int,
+        telefono: String
     ): Usuario {
 
         val existente = usuarioRepository.verPorEmail(email)
@@ -27,7 +28,8 @@ class RegistrarUsuarioUseCase(
             email = email,
             contrasena = contrasenaHasheada,
             idRol = idRol,
-            nombreRol = obtenerNombreRol(idRol)
+            nombreRol = obtenerNombreRol(idRol),
+            telefono = telefono
         )
 
         return usuarioRepository.guardar(usuario)

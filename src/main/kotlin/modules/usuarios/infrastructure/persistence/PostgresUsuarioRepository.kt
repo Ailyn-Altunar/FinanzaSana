@@ -22,7 +22,8 @@ class PostgresUsuarioRepository : UsuarioRepository {
         email = row[UsuarioTable.email],
         contrasena = row[UsuarioTable.contrasena],
         idRol = row[UsuarioTable.idRol],
-        nombreRol = row[RolTable.nombre]
+        nombreRol = row[RolTable.nombre],
+        telefono = row[UsuarioTable.telefono]
     )
 
     override suspend fun verPorId(id: Int): Usuario? = newSuspendedTransaction {
@@ -43,13 +44,12 @@ class PostgresUsuarioRepository : UsuarioRepository {
 
     override suspend fun guardar(usuario: Usuario): Usuario = newSuspendedTransaction {
         val nuevoId = UsuarioTable.insert {
-            it[UsuarioTable.nombre] = usuario.nombre
-            it[UsuarioTable.email] = usuario.email
-            it[UsuarioTable.contrasena] = usuario.contrasena
-            it[UsuarioTable.idRol] = usuario.idRol
+            it[nombre] = usuario.nombre
+            it[email] = usuario.email
+            it[contrasena] = usuario.contrasena
+            it[idRol] = usuario.idRol
+            it[telefono] = usuario.telefono
         }[UsuarioTable.id]
-
-
 
         UsuariosConRoles()
             .select { UsuarioTable.id eq nuevoId }
@@ -58,13 +58,14 @@ class PostgresUsuarioRepository : UsuarioRepository {
             ?: throw IllegalStateException("El usuario se insertó con ID $nuevoId pero no se pudo recuperar")
     }
 
-    override suspend fun actualizar(usuario: Usuario): Usuario? = newSuspendedTransaction {
-        UsuarioTable.update({ UsuarioTable.id eq usuario.id!! }) {
-            it[UsuarioTable.nombre] = usuario.nombre
-            it[UsuarioTable.email] = usuario.email
-            it[UsuarioTable.idRol] = usuario.idRol
+    override suspend fun actualizar(id: Int, usuario: Usuario): Usuario? = newSuspendedTransaction {
+        val filasAfectadas = UsuarioTable.update({ UsuarioTable.id eq id }) {
+            it[nombre] = usuario.nombre
+            it[email] = usuario.email
+            it[idRol] = usuario.idRol
+            it[telefono] = usuario.telefono
         }
-        verPorId(usuario.id!!)
+        if (filasAfectadas > 0) verPorId(id) else null
     }
 
     override suspend fun eliminar(id: Int): Boolean = newSuspendedTransaction {

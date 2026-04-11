@@ -11,7 +11,7 @@ interface UsuarioRepository {
 
     suspend fun guardar(usuario: Usuario): Usuario
 
-    suspend fun actualizar(usuario: Usuario): Usuario?
+    suspend fun actualizar(id: Int, usuario: Usuario): Usuario?
 
     suspend fun eliminar(id: Int): Boolean
 

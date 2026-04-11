@@ -10,7 +10,7 @@ object UsuarioTable : Table("usuarios") {
     val email = varchar("email", 200).uniqueIndex()
     val contrasena = varchar("contrasena", 255)
     val idRol = integer("id_rol").references(RolTable.idRol)
+    val telefono = varchar("telefono", 20)
 
     override val primaryKey = PrimaryKey(id)
 }
-
