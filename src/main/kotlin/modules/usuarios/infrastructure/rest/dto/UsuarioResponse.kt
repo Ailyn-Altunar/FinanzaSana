@@ -8,7 +8,7 @@ data class UsuarioResponse(
     val id: Int,
     val nombre: String,
     val email: String,
-    val rol: String,
+    val rol: Int,
     val telefono: String
 )
 
@@ -17,6 +17,6 @@ fun Usuario.toResponse(): UsuarioResponse =
         id = this.id ?: 0,
         nombre = this.nombre,
         email = this.email,
-        rol = this.nombreRol ?: "DESCONOCIDO",
+        rol = this.idRol,
         telefono = this.telefono
     )

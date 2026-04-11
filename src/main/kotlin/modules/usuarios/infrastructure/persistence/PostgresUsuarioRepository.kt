@@ -22,7 +22,6 @@ class PostgresUsuarioRepository : UsuarioRepository {
         email = row[UsuarioTable.email],
         contrasena = row[UsuarioTable.contrasena],
         idRol = row[UsuarioTable.idRol],
-        nombreRol = row[RolTable.nombre],
         telefono = row[UsuarioTable.telefono]
     )
 

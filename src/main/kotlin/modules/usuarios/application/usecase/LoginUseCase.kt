@@ -8,14 +8,16 @@ class LoginUseCase(
     private val usuarioRepository: UsuarioRepository
 ) {
 
-    suspend fun ejecutar(email: String, contrasena: String): Usuario {
+    suspend fun ejecutar(email: String, contrasena: String): Usuario? {
+
+        if (email.isBlank()) return null
+        if (contrasena.isBlank()) return null
+
         val usuario = usuarioRepository.verPorEmail(email)
-            ?: throw IllegalArgumentException("El usuario no existe")
+            ?: return null
 
         val contrasenaValida = BCrypt.checkpw(contrasena, usuario.contrasena)
-        if (!contrasenaValida) {
-            throw IllegalArgumentException("Contraseña incorrecta")
-        }
+        if (!contrasenaValida) return null
 
         return usuario
     }

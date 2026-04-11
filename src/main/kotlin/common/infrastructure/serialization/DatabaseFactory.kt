@@ -1,6 +1,9 @@
 package com.finanzasana.common.infrastructure.serialization
 
 import com.finanzasana.modules.catalogoRol.infrastructure.persistence.RolTable
+import com.finanzasana.modules.categorias.infrastructure.persistence.CategoriaTable
+import com.finanzasana.modules.deudas.infrastructure.persistence.AbonoTable
+import com.finanzasana.modules.deudas.infrastructure.persistence.DeudaTable
 import com.finanzasana.modules.usuarios.infrastructure.persistence.UsuarioTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -32,6 +35,9 @@ object DatabaseFactory {
             SchemaUtils.create(
                 UsuarioTable,
                 RolTable,
+                CategoriaTable,
+                DeudaTable,
+                AbonoTable
 
             )
         }

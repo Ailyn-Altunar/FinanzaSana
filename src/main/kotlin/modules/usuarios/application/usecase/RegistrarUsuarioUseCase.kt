@@ -14,31 +14,32 @@ class RegistrarUsuarioUseCase(
         contrasena: String,
         idRol: Int,
         telefono: String
-    ): Usuario {
+    ): Usuario? {
 
+        if (nombre.isBlank()) return null
+        if (email.isBlank()) return null
+        if (contrasena.isBlank()) return null
+        if (telefono.isBlank()) return null
+
+        // Solo 2 roles válidos: 1 = admin, 2 = cliente
+        if (idRol != 1 && idRol != 2) return null
+
+        // Verificar si ya existe un usuario con ese email
         val existente = usuarioRepository.verPorEmail(email)
-        if (existente != null) {
-            throw IllegalArgumentException("El email ya está registrado")
-        }
+        if (existente != null) return null
 
+        // Hashear contraseña
         val contrasenaHasheada = BCrypt.hashpw(contrasena, BCrypt.gensalt())
 
         val usuario = Usuario(
             nombre = nombre,
             email = email,
             contrasena = contrasenaHasheada,
-            idRol = idRol,
-            nombreRol = obtenerNombreRol(idRol),
+            idRol = 2, // 🔥 SIEMPRE CLIENTE
             telefono = telefono
         )
 
+
         return usuarioRepository.guardar(usuario)
     }
-
-    private fun obtenerNombreRol(idRol: Int): String =
-        when (idRol) {
-            1 -> "ADMIN"
-            2 -> "CLIENTE"
-            else -> "DESCONOCIDO"
-        }
 }

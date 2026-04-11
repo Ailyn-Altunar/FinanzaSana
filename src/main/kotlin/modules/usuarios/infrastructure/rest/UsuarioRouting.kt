@@ -16,9 +16,6 @@ import org.koin.ktor.ext.inject
 
 fun Route.usuarioRouting() {
 
-    // ============================
-    // Inyección de dependencias
-    // ============================
     val loginUseCase by inject<LoginUseCase>()
     val registrarUsuarioUseCase by inject<RegistrarUsuarioUseCase>()
     val verPerfilUseCase by inject<VerPerfilUseCase>()
@@ -33,9 +30,9 @@ fun Route.usuarioRouting() {
         post("/login") {
             val request = call.receive<LoginRequest>()
 
-            val usuario = try {
-                loginUseCase.ejecutar(request.email, request.contrasena)
-            } catch (e: Exception) {
+            val usuario = loginUseCase.ejecutar(request.email, request.contrasena)
+
+            if (usuario == null) {
                 return@post call.respond(
                     HttpStatusCode.Unauthorized,
                     mapOf("error" to "Credenciales incorrectas")
@@ -55,6 +52,33 @@ fun Route.usuarioRouting() {
     }
 
     // ============================
+    // REGISTRO PÚBLICO
+    // ============================
+    route("/usuarios") {
+
+        post("/registro") {
+            val request = call.receive<UsuarioRequest>()
+
+            val nuevo = registrarUsuarioUseCase.ejecutar(
+                nombre = request.nombre,
+                email = request.email,
+                contrasena = request.contrasena,
+                idRol = request.idRol,
+                telefono = request.telefono
+            )
+
+            if (nuevo == null) {
+                return@post call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "No se pudo registrar el usuario")
+                )
+            }
+
+            call.respond(HttpStatusCode.Created, nuevo.toResponse())
+        }
+    }
+
+    // ============================
     // RUTAS PROTEGIDAS
     // ============================
     authenticate("auth-jwt") {
@@ -66,6 +90,14 @@ fun Route.usuarioRouting() {
                 val id = principal.payload.getClaim("id").asInt()
 
                 val usuario = verPerfilUseCase.ejecutar(id)
+
+                if (usuario == null) {
+                    return@get call.respond(
+                        HttpStatusCode.NotFound,
+                        mapOf("error" to "Usuario no encontrado")
+                    )
+                }
+
                 call.respond(HttpStatusCode.OK, usuario.toResponse())
             }
 
@@ -74,38 +106,16 @@ fun Route.usuarioRouting() {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idSolicitante = principal.payload.getClaim("id").asInt()
 
-                try {
-                    val lista = verUsuariosAdminUseCase.ejecutar(idSolicitante)
-                    call.respond(HttpStatusCode.OK, lista.map { it.toResponse() })
-                } catch (e: Exception) {
-                    call.respond(HttpStatusCode.Forbidden, mapOf("error" to e.message))
-                }
-            }
+                val lista = verUsuariosAdminUseCase.ejecutar(idSolicitante)
 
-            // CREAR USUARIO (solo admin)
-            post("/crear") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val idSolicitante = principal.payload.getClaim("id").asInt()
-
-                val solicitante = verPerfilUseCase.ejecutar(idSolicitante)
-                if (solicitante.idRol != 1) {
-                    return@post call.respond(
+                if (lista == null) {
+                    return@get call.respond(
                         HttpStatusCode.Forbidden,
-                        mapOf("error" to "No tienes permisos para crear usuarios")
+                        mapOf("error" to "No tienes permisos para ver la lista de usuarios")
                     )
                 }
 
-                val request = call.receive<UsuarioRequest>()
-
-                val nuevo = registrarUsuarioUseCase.ejecutar(
-                    nombre = request.nombre,
-                    email = request.email,
-                    contrasena = request.contrasena,
-                    idRol = request.idRol,
-                    telefono = request.telefono
-                )
-
-                call.respond(HttpStatusCode.Created, nuevo.toResponse())
+                call.respond(HttpStatusCode.OK, lista.map { it.toResponse() })
             }
         }
     }

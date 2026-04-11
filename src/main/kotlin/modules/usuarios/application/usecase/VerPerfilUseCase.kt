@@ -1,4 +1,3 @@
-
 package com.finanzasana.modules.usuarios.application.usecase
 
 import com.finanzasana.modules.usuarios.domain.model.Usuario
@@ -8,10 +7,7 @@ class VerPerfilUseCase(
     private val usuarioRepository: UsuarioRepository
 ) {
 
-    suspend fun ejecutar(idUsuario: Int): Usuario {
-        val usuario = usuarioRepository.verPorId(idUsuario)
-            ?: throw IllegalArgumentException("El usuario no existe")
-
-        return usuario
+    suspend fun ejecutar(idUsuario: Int): Usuario? {
+        return usuarioRepository.verPorId(idUsuario)
     }
 }

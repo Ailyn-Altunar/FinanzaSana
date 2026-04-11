@@ -7,14 +7,13 @@ class VerUsuariosAdminUseCase(
     private val usuarioRepository: UsuarioRepository
 ) {
 
-    suspend fun ejecutar(idUsuarioSolicitante: Int): List<Usuario> {
+    suspend fun ejecutar(idUsuarioSolicitante: Int): List<Usuario>? {
 
         val solicitante = usuarioRepository.verPorId(idUsuarioSolicitante)
-            ?: throw IllegalArgumentException("El usuario solicitante no existe")
+            ?: return null
 
-        if (solicitante.idRol != 1) {
-            throw IllegalAccessException("No tienes permisos para ver la lista de usuarios")
-        }
+        // Solo ADMIN puede ver la lista
+        if (solicitante.idRol != 1) return null
 
         return usuarioRepository.listar()
     }
