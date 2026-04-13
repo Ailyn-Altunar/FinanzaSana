@@ -9,10 +9,9 @@ import org.koin.dsl.module
 
 val adminModule = module {
 
-    // USE CASES
     factory { VerMetricasAdminUseCase(get()) }
     factory { VerActividadAdminUseCase(get()) }
     factory { VerUsuariosAdminUseCase(get()) }
-    // REPOSITORY
+
     single<AdminRepository> { PostgresAdminRepository() }
 }

@@ -36,7 +36,6 @@ fun Route.adminRouting() {
                 call.respond(HttpStatusCode.OK, metricas.toResponse())
             }
 
-            // ACTIVIDAD
             get("/actividad") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val rol = principal.payload.getClaim("idRol").asInt()
@@ -52,7 +51,6 @@ fun Route.adminRouting() {
                 call.respond(HttpStatusCode.OK, actividad.toResponse())
             }
 
-            // USUARIOS ADMIN
             get("/usuarios") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val rol = principal.payload.getClaim("idRol").asInt()

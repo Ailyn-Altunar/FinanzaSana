@@ -12,9 +12,7 @@ import java.time.LocalDateTime
 
 class PostgresAdminRepository : AdminRepository {
 
-    // -----------------------------------
-    //   MÉTRICAS DEL DASHBOARD
-    // -----------------------------------
+
     override suspend fun obtenerMetricas(): AdminMetrics = newSuspendedTransaction {
 
         val usuariosTotales = UsuarioTable
@@ -39,9 +37,8 @@ class PostgresAdminRepository : AdminRepository {
         )
     }
 
-    // -----------------------------------
-    //   ACTIVIDAD RECIENTE (SIN TABLA)
-    // -----------------------------------
+
+
     override suspend fun obtenerActividadReciente(): List<ActividadAdmin> = newSuspendedTransaction {
 
         listOf(
@@ -58,13 +55,12 @@ class PostgresAdminRepository : AdminRepository {
         )
     }
 
-    // -----------------------------------
-    //   LISTA DE USUARIOS PARA ADMIN
-    // -----------------------------------
+
     override suspend fun obtenerUsuariosAdmin(): List<UserAdmin> = newSuspendedTransaction {
 
         (UsuarioTable leftJoin DeudaTable)
             .slice(
+                UsuarioTable.id,
                 UsuarioTable.nombre,
                 UsuarioTable.email,
                 DeudaTable.id.count()
@@ -73,6 +69,7 @@ class PostgresAdminRepository : AdminRepository {
             .groupBy(UsuarioTable.id)
             .map { row ->
                 UserAdmin(
+                    id = row[UsuarioTable.id],
                     nombre = row[UsuarioTable.nombre],
                     email = row[UsuarioTable.email],
                     totalDeudas = row[DeudaTable.id.count()].toInt()

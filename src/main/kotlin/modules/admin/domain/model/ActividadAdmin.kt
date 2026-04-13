@@ -11,7 +11,6 @@ data class ActividadAdmin(
     init {
         require(usuario.isNotBlank()) { "El nombre del usuario no puede estar vacío" }
         require(accion.isNotBlank()) { "La acción no puede estar vacía" }
-        // Para LocalDateTime validamos que no sea nulo y que sea una fecha válida
         require(fecha != null) { "La fecha no puede ser nula" }
     }
 }

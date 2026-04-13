@@ -21,6 +21,8 @@ import com.finanzasana.modules.categorias.categoriaModule
 import com.finanzasana.modules.categorias.infrastructure.rest.categoriaRouting
 import com.finanzasana.modules.planificador.PlanificadorModule
 import com.finanzasana.modules.planificador.infrastructure.rest.planificadorRouting
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 
 
 fun Application.module() {
@@ -61,4 +63,9 @@ fun Application.module() {
         adminRouting()
         planificadorRouting()
     }
+}
+fun main() {
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0") { // <--- 0.0.0.0 permite conexiones externas
+        module()
+    }.start(wait = true)
 }
