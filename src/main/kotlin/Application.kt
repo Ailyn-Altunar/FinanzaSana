@@ -2,6 +2,8 @@ package com.finanzasana
 
 import com.finanzasana.common.infrastructure.security.configureSecurity
 import com.finanzasana.common.infrastructure.serialization.DatabaseFactory
+import com.finanzasana.modules.admin.adminModule
+import com.finanzasana.modules.admin.infrastructure.rest.adminRouting
 import com.finanzasana.modules.usuarios.usuarioModule
 import com.finanzasana.modules.catalogoRol.rolModule
 import com.finanzasana.modules.deudas.DeudaModule
@@ -31,7 +33,8 @@ fun Application.module() {
             usuarioModule,
             rolModule,
             DeudaModule,
-            categoriaModule
+            categoriaModule,
+            adminModule
         )
     }
 
@@ -51,5 +54,6 @@ fun Application.module() {
         deudaRouting()
         abonoRouting()
         categoriaRouting()
+        adminRouting()
     }
 }
