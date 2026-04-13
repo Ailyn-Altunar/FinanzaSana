@@ -19,6 +19,8 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import com.finanzasana.modules.categorias.categoriaModule
 import com.finanzasana.modules.categorias.infrastructure.rest.categoriaRouting
+import com.finanzasana.modules.planificador.PlanificadorModule
+import com.finanzasana.modules.planificador.infrastructure.rest.planificadorRouting
 
 
 fun Application.module() {
@@ -34,7 +36,9 @@ fun Application.module() {
             rolModule,
             DeudaModule,
             categoriaModule,
-            adminModule
+            adminModule,
+            PlanificadorModule
+
         )
     }
 
@@ -55,5 +59,6 @@ fun Application.module() {
         abonoRouting()
         categoriaRouting()
         adminRouting()
+        planificadorRouting()
     }
 }
