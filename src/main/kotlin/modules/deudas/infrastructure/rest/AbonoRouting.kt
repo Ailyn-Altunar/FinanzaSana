@@ -18,9 +18,7 @@ fun Route.abonoRouting() {
     authenticate("auth-jwt") {
         route("/abonos") {
 
-            // ============================
-            // LISTAR ABONOS DE UNA DEUDA
-            // ============================
+
             get("/{idDeuda}") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idUsuario = principal.payload.getClaim("id").asInt()
@@ -37,9 +35,7 @@ fun Route.abonoRouting() {
                 call.respond(HttpStatusCode.OK, abonos)
             }
 
-            // ============================
-            // REGISTRAR ABONO
-            // ============================
+
             post("/{idDeuda}") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idUsuario = principal.payload.getClaim("id").asInt()

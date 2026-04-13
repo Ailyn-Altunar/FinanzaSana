@@ -22,9 +22,7 @@ fun Route.deudaRouting() {
     authenticate("auth-jwt") {
         route("/deudas") {
 
-            // ============================
-            // LISTAR DEUDAS DEL USUARIO
-            // ============================
+
             get {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idUsuario = principal.payload.getClaim("id").asInt()
@@ -39,9 +37,7 @@ fun Route.deudaRouting() {
                 call.respond(HttpStatusCode.OK, response)
             }
 
-            // ============================
-            // CREAR DEUDA
-            // ============================
+
             post {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idUsuario = principal.payload.getClaim("id").asInt()
@@ -54,9 +50,7 @@ fun Route.deudaRouting() {
                 call.respond(HttpStatusCode.Created, deuda.toResponse(categoriaNombre, emptyList()))
             }
 
-            // ============================
-            // DETALLE DE UNA DEUDA
-            // ============================
+
             get("/{idDeuda}") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idUsuario = principal.payload.getClaim("id").asInt()
