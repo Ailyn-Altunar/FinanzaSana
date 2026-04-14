@@ -8,17 +8,14 @@ object AbonoTable : Table("abonos") {
 
     val id = integer("id").autoIncrement()
 
-    // Relación con la deuda
     val idDeuda = integer("id_deuda")
         .references(DeudaTable.id)
 
-    // Relación con el usuario que hizo el abono
     val idUsuario = integer("id_usuario")
         .references(UsuarioTable.id)
 
     val monto = double("monto")
 
-    // Fecha del abono usando timestamp nativo
     val fecha = datetime("fecha")
 
     override val primaryKey = PrimaryKey(id)

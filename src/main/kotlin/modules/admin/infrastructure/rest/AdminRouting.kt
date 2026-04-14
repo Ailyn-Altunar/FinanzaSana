@@ -20,7 +20,6 @@ fun Route.adminRouting() {
     authenticate("auth-jwt") {
         route("/admin") {
 
-            // MÉTRICAS
             get("/metrics") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val rol = principal.payload.getClaim("idRol").asInt()

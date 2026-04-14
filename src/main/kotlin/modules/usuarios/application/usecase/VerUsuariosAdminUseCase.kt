@@ -12,7 +12,6 @@ class VerUsuariosAdminUseCase(
         val solicitante = usuarioRepository.verPorId(idUsuarioSolicitante)
             ?: return null
 
-        // Solo ADMIN puede ver la lista
         if (solicitante.idRol != 1) return null
 
         return usuarioRepository.listar()

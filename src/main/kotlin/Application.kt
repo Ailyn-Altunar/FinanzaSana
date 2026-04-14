@@ -29,8 +29,6 @@ fun Application.module() {
 
     DatabaseFactory.init()
 
-    // 2. Inyección de dependencias (Koin)
-    // Debe ir antes de Seguridad y Routing por si necesitas inyectar algo ahí
     install(Koin) {
         slf4jLogger()
         modules(
@@ -44,7 +42,6 @@ fun Application.module() {
         )
     }
 
-    // 3. Serialización JSON (Necesaria para que Auth pueda leer/escribir respuestas)
     install(ContentNegotiation) {
         json()
     }

@@ -10,9 +10,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 class PostgresPlanificadorRepository : PlanificadorRepository {
 
-    // ---------------------------
-    //   MAPPER
-    // ---------------------------
+
     private fun toDomain(row: ResultRow): Deuda = Deuda(
         id = row[DeudaTable.id],
         concepto = row[DeudaTable.concepto],
@@ -24,9 +22,7 @@ class PostgresPlanificadorRepository : PlanificadorRepository {
         idUsuario = row[DeudaTable.idUsuario]
     )
 
-    // ---------------------------
-    //   GENERAR PLAN
-    // ---------------------------
+
     override suspend fun generarPlan(idUsuario: Int, metodo: String): PlanificadorResultado =
         newSuspendedTransaction {
 

@@ -11,27 +11,17 @@ import org.koin.dsl.module
 
 val DeudaModule = module {
 
-    // ============================
-    // Casos de uso - Deudas
-    // ============================
     factory { RegistrarDeudaUseCase(get()) }
     factory { ListarDeudasUsuarioUseCase(get()) }
     factory { VerDetalleDeudaUseCase(get()) }
 
-    // ============================
-    // Casos de uso - Abonos
-    // ============================
+
     factory { RegistrarAbonoUseCase(get(), get()) }
     factory { ListarAbonosPorDeudaUseCase(get(), get()) }
 
-    // ============================
-    // Repositorios
-    // ============================
     single<DeudaRepository> { PostgresDeudaRepository() }
     single<AbonoRepository> { PostgresAbonoRepository() }
 
-    // ============================
-    // Repositorio de Categorías
-    // ============================
+
     single<CategoriaRepository> { PostgresCategoriaRepository() }
 }

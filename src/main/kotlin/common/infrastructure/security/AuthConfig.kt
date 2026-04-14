@@ -8,9 +8,9 @@ fun Application.configureSecurity() {
 
     install(Authentication) {
 
-        jwt("auth-jwt") {   // Nombre del proveedor de autenticación
+        jwt("auth-jwt") {
 
-            verifier(JwtConfig.verifier)   // Usa el verificador definido en JwtConfig
+            verifier(JwtConfig.verifier)
 
             validate { credential ->
 

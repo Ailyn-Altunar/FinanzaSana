@@ -8,9 +8,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 class PostgresDeudaRepository : DeudaRepository {
 
-    // ---------------------------
-    //   MAPPER
-    // ---------------------------
+
     private fun toDomain(row: ResultRow): Deuda = Deuda(
         id = row[DeudaTable.id],
         concepto = row[DeudaTable.concepto],
@@ -22,9 +20,7 @@ class PostgresDeudaRepository : DeudaRepository {
         idUsuario = row[DeudaTable.idUsuario]
     )
 
-    // ---------------------------
-    //   REGISTRAR DEUDA
-    // ---------------------------
+
     override suspend fun registrar(deuda: Deuda): Deuda = newSuspendedTransaction {
 
         val nuevoId = DeudaTable.insert {
@@ -43,9 +39,7 @@ class PostgresDeudaRepository : DeudaRepository {
             .single()
     }
 
-    // ---------------------------
-    //   LISTAR DEUDAS POR USUARIO
-    // ---------------------------
+
     override suspend fun listarPorUsuario(idUsuario: Int): List<Deuda> = newSuspendedTransaction {
         DeudaTable
             .select { DeudaTable.idUsuario eq idUsuario }
@@ -53,9 +47,7 @@ class PostgresDeudaRepository : DeudaRepository {
             .map { toDomain(it) }
     }
 
-    // ---------------------------
-    //   VER DETALLE DE UNA DEUDA
-    // ---------------------------
+
     override suspend fun obtenerPorId(idDeuda: Int, idUsuario: Int): Deuda? = newSuspendedTransaction {
         DeudaTable
             .select {
@@ -66,9 +58,7 @@ class PostgresDeudaRepository : DeudaRepository {
             .singleOrNull()
     }
 
-    // ---------------------------
-    //   ACTUALIZAR SALDO
-    // ---------------------------
+
     override suspend fun actualizarSaldo(idDeuda: Int, nuevoSaldo: Double) = newSuspendedTransaction {
         DeudaTable.update({ DeudaTable.id eq idDeuda }) {
             it[saldoActual] = nuevoSaldo
@@ -76,9 +66,7 @@ class PostgresDeudaRepository : DeudaRepository {
         Unit
     }
 
-    // ---------------------------
-    //   LIQUIDAR DEUDA
-    // ---------------------------
+
     override suspend fun liquidar(idDeuda: Int) = newSuspendedTransaction {
         DeudaTable.update({ DeudaTable.id eq idDeuda }) {
             it[saldoActual] = 0.0

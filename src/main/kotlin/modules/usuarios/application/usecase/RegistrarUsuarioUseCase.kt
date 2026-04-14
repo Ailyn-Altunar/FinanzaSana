@@ -21,21 +21,19 @@ class RegistrarUsuarioUseCase(
         if (contrasena.isBlank()) return null
         if (telefono.isBlank()) return null
 
-        // Solo 2 roles válidos: 1 = admin, 2 = cliente
+
         if (idRol != 1 && idRol != 2) return null
 
-        // Verificar si ya existe un usuario con ese email
         val existente = usuarioRepository.verPorEmail(email)
         if (existente != null) return null
 
-        // Hashear contraseña
         val contrasenaHasheada = BCrypt.hashpw(contrasena, BCrypt.gensalt())
 
         val usuario = Usuario(
             nombre = nombre,
             email = email,
             contrasena = contrasenaHasheada,
-            idRol = 2, // 🔥 SIEMPRE CLIENTE
+            idRol = 2,
             telefono = telefono
         )
 

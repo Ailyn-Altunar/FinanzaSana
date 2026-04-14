@@ -1,10 +1,10 @@
 package com.finanzasana.modules.usuarios.infrastructure.rest
 
 import com.finanzasana.common.infrastructure.security.JwtConfig
+import com.finanzasana.modules.usuarios.application.usecase.EliminarUsuarioUseCase
 import com.finanzasana.modules.usuarios.application.usecase.LoginUseCase
 import com.finanzasana.modules.usuarios.application.usecase.RegistrarUsuarioUseCase
 import com.finanzasana.modules.usuarios.application.usecase.VerPerfilUseCase
-import com.finanzasana.modules.usuarios.application.usecase.VerUsuariosAdminUseCase
 import com.finanzasana.modules.usuarios.infrastructure.rest.dto.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
@@ -19,14 +19,10 @@ fun Route.usuarioRouting() {
     val loginUseCase by inject<LoginUseCase>()
     val registrarUsuarioUseCase by inject<RegistrarUsuarioUseCase>()
     val verPerfilUseCase by inject<VerPerfilUseCase>()
-    val verUsuariosAdminUseCase by inject<VerUsuariosAdminUseCase>()
 
-    // ============================
-    // RUTAS PÚBLICAS
-    // ============================
+
     route("/auth") {
 
-        // LOGIN
         post("/login") {
             val request = call.receive<LoginRequest>()
 
@@ -51,9 +47,7 @@ fun Route.usuarioRouting() {
         }
     }
 
-    // ============================
-    // REGISTRO PÚBLICO
-    // ============================
+
     route("/usuarios") {
 
         post("/registro") {
@@ -78,13 +72,11 @@ fun Route.usuarioRouting() {
         }
     }
 
-    // ============================
-    // RUTAS PROTEGIDAS
-    // ============================
+
     authenticate("auth-jwt") {
         route("/usuarios") {
 
-            // PERFIL DEL USUARIO LOGUEADO
+            // PERFIL DEL USUARIO AUTENTICADO
             get("/perfil") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val id = principal.payload.getClaim("id").asInt()
@@ -101,21 +93,44 @@ fun Route.usuarioRouting() {
                 call.respond(HttpStatusCode.OK, usuario.toResponse())
             }
 
-            // LISTA DE USUARIOS (solo admin)
-            get("/lista") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val idSolicitante = principal.payload.getClaim("id").asInt()
+            // ELIMINAR USUARIO (SOLO ADMIN)
+            delete("/{id}") {
 
-                val lista = verUsuariosAdminUseCase.ejecutar(idSolicitante)
+                val eliminarUsuarioUseCase by inject<EliminarUsuarioUseCase>()
 
-                if (lista == null) {
-                    return@get call.respond(
-                        HttpStatusCode.Forbidden,
-                        mapOf("error" to "No tienes permisos para ver la lista de usuarios")
+                val id = call.parameters["id"]?.toIntOrNull()
+                if (id == null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "ID inválido")
                     )
+                    return@delete
                 }
 
-                call.respond(HttpStatusCode.OK, lista.map { it.toResponse() })
+                val principal = call.principal<JWTPrincipal>()!!
+                val rol = principal.payload.getClaim("idRol").asInt()
+
+                if (rol != 1) {
+                    call.respond(
+                        HttpStatusCode.Forbidden,
+                        mapOf("error" to "Solo un administrador puede eliminar usuarios")
+                    )
+                    return@delete
+                }
+
+                val eliminado = eliminarUsuarioUseCase(id)
+
+                if (eliminado) {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        mapOf("mensaje" to "Usuario eliminado correctamente")
+                    )
+                } else {
+                    call.respond(
+                        HttpStatusCode.NotFound,
+                        mapOf("error" to "Usuario no encontrado")
+                    )
+                }
             }
         }
     }

@@ -8,17 +8,13 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 class PostgresCategoriaRepository : CategoriaRepository {
 
-    // ---------------------------
-    //   MAPPER
-    // ---------------------------
+
     private fun toDomain(row: ResultRow): Categoria = Categoria(
         id = row[CategoriaTable.id].value,
         nombre = row[CategoriaTable.nombre]
     )
 
-    // ---------------------------
-    //   LISTAR TODAS LAS CATEGORÍAS
-    // ---------------------------
+
     override suspend fun listar(): List<Categoria> = newSuspendedTransaction {
         CategoriaTable
             .selectAll()
@@ -26,9 +22,7 @@ class PostgresCategoriaRepository : CategoriaRepository {
             .map { toDomain(it) }
     }
 
-    // ---------------------------
-    //   OBTENER NOMBRE POR ID
-    // ---------------------------
+
     override suspend fun obtenerNombrePorId(id: Int): String = newSuspendedTransaction {
         CategoriaTable
             .select { CategoriaTable.id eq id }

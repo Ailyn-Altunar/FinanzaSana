@@ -9,9 +9,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 class PostgresAbonoRepository : AbonoRepository {
 
-    // ---------------------------
-    //   JOIN con Usuario (opcional)
-    // ---------------------------
+
     private fun AbonosConUsuario() = AbonoTable.join(
         UsuarioTable,
         joinType = JoinType.INNER,
@@ -19,9 +17,7 @@ class PostgresAbonoRepository : AbonoRepository {
         otherColumn = UsuarioTable.id
     )
 
-    // ---------------------------
-    //   MAPPER
-    // ---------------------------
+
     private fun toDomain(row: ResultRow): Abono = Abono(
         id = row[AbonoTable.id],
         idDeuda = row[AbonoTable.idDeuda],
@@ -30,9 +26,7 @@ class PostgresAbonoRepository : AbonoRepository {
         fecha = row[AbonoTable.fecha]
     )
 
-    // ---------------------------
-    //   REGISTRAR ABONO
-    // ---------------------------
+
     override suspend fun registrar(abono: Abono): Abono = newSuspendedTransaction {
         val nuevoId = AbonoTable.insert {
             it[idDeuda] = abono.idDeuda
@@ -48,9 +42,7 @@ class PostgresAbonoRepository : AbonoRepository {
             ?: throw IllegalStateException("El abono se insertó con ID $nuevoId pero no se pudo recuperar")
     }
 
-    // ---------------------------
-    //   LISTAR ABONOS POR DEUDA
-    // ---------------------------
+
     override suspend fun listarPorDeuda(idDeuda: Int, idUsuario: Int): List<Abono> = newSuspendedTransaction {
         AbonosConUsuario()
             .select {

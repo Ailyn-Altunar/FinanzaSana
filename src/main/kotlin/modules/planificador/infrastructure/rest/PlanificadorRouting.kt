@@ -27,18 +27,13 @@ fun Route.planificadorRouting() {
 
             val resultado = generarPlanificadorUseCase(idUsuario, metodo)
 
-            // ============================
-            //   CONVERTIR DEUDAS A DTO
-            //   (MISMO ESTILO QUE deudaRouting)
-            // ============================
+
             val deudasResponse = resultado.deudasOrdenadas.map { deuda ->
                 val categoriaNombre = categoriaRepository.obtenerNombrePorId(deuda.idCategoria)
                 deuda.toResponse(categoriaNombre, emptyList())
             }
 
-            // ============================
-            //   ARMAR RESPUESTA FINAL
-            // ============================
+
             val response = PlanificadorResponse(
                 metodo = resultado.metodo,
                 totalDeuda = resultado.totalDeuda,

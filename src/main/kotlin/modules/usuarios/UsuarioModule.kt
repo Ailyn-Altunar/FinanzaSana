@@ -11,6 +11,7 @@ val usuarioModule = module {
     factory { RegistrarUsuarioUseCase(get()) }
     factory { VerPerfilUseCase(get()) }
     factory { VerUsuariosAdminUseCase(get()) }
+    factory { EliminarUsuarioUseCase(get()) }
 
 
     single<UsuarioRepository> { PostgresUsuarioRepository() }

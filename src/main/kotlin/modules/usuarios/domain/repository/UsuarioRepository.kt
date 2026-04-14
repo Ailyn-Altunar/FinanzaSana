@@ -16,4 +16,6 @@ interface UsuarioRepository {
     suspend fun eliminar(id: Int): Boolean
 
     suspend fun listar(): List<Usuario>
+
+
 }
