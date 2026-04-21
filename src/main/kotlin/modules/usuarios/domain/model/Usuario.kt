@@ -6,7 +6,8 @@ data class Usuario(
     val email: String,
     val contrasena: String,
     val idRol: Int,
-    val telefono: String
+    val telefono: String,
+    val activo: Boolean = true
 ) {
 
     init {

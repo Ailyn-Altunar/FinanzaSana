@@ -7,6 +7,7 @@ import com.finanzasana.modules.planificador.domain.repository.PlanificadorReposi
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import java.time.LocalDate
 
 class PostgresPlanificadorRepository : PlanificadorRepository {
 
@@ -25,18 +26,23 @@ class PostgresPlanificadorRepository : PlanificadorRepository {
 
     override suspend fun generarPlan(idUsuario: Int, metodo: String): PlanificadorResultado =
         newSuspendedTransaction {
+            val hoy = LocalDate.now()
 
             val deudas = DeudaTable
-                .select { DeudaTable.idUsuario eq idUsuario }
+                .select {
+                    (DeudaTable.idUsuario eq idUsuario) and
+                        (DeudaTable.saldoActual greater 0.0) and
+                        (DeudaTable.fechaVencimiento greaterEq hoy)
+                }
                 .map { toDomain(it) }
 
             val deudasOrdenadas = when (metodo) {
-                "Avalancha" -> deudas.sortedByDescending { it.tasaInteres ?: 0.0 }
+                "Avalancha" -> deudas.sortedByDescending { it.tasaInteres }
                 else -> deudas.sortedBy { it.saldoActual }
             }
 
             val total = deudas.sumOf { it.saldoActual }
-            val tasaPromedio = deudas.mapNotNull { it.tasaInteres }.average()
+            val tasaPromedio = deudas.map { it.tasaInteres }.average()
                 .takeIf { !it.isNaN() } ?: 0.0
 
             PlanificadorResultado(

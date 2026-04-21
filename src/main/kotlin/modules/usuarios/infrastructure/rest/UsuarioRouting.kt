@@ -4,7 +4,6 @@ import com.finanzasana.common.infrastructure.security.JwtConfig
 import com.finanzasana.modules.usuarios.application.usecase.EliminarUsuarioUseCase
 import com.finanzasana.modules.usuarios.application.usecase.LoginUseCase
 import com.finanzasana.modules.usuarios.application.usecase.RegistrarUsuarioUseCase
-import com.finanzasana.modules.usuarios.application.usecase.VerPerfilUseCase
 import com.finanzasana.modules.usuarios.infrastructure.rest.dto.*
 import io.ktor.http.*
 import io.ktor.server.auth.*
@@ -18,7 +17,6 @@ fun Route.usuarioRouting() {
 
     val loginUseCase by inject<LoginUseCase>()
     val registrarUsuarioUseCase by inject<RegistrarUsuarioUseCase>()
-    val verPerfilUseCase by inject<VerPerfilUseCase>()
 
 
     route("/auth") {
@@ -76,23 +74,6 @@ fun Route.usuarioRouting() {
     authenticate("auth-jwt") {
         route("/usuarios") {
 
-            // PERFIL DEL USUARIO AUTENTICADO
-            get("/perfil") {
-                val principal = call.principal<JWTPrincipal>()!!
-                val id = principal.payload.getClaim("id").asInt()
-
-                val usuario = verPerfilUseCase.ejecutar(id)
-
-                if (usuario == null) {
-                    return@get call.respond(
-                        HttpStatusCode.NotFound,
-                        mapOf("error" to "Usuario no encontrado")
-                    )
-                }
-
-                call.respond(HttpStatusCode.OK, usuario.toResponse())
-            }
-
             // ELIMINAR USUARIO (SOLO ADMIN)
             delete("/{id}") {
 
@@ -118,19 +99,12 @@ fun Route.usuarioRouting() {
                     return@delete
                 }
 
-                val eliminado = eliminarUsuarioUseCase(id)
+                eliminarUsuarioUseCase(id)
 
-                if (eliminado) {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        mapOf("mensaje" to "Usuario eliminado correctamente")
-                    )
-                } else {
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        mapOf("error" to "Usuario no encontrado")
-                    )
-                }
+                call.respond(
+                    HttpStatusCode.OK,
+                    mapOf("mensaje" to "Usuario eliminado correctamente")
+                )
             }
         }
     }

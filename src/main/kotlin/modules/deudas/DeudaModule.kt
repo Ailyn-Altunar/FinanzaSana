@@ -11,8 +11,9 @@ import org.koin.dsl.module
 
 val DeudaModule = module {
 
-    factory { RegistrarDeudaUseCase(get()) }
     factory { ListarDeudasUsuarioUseCase(get()) }
+    factory { ObtenerTotalAdeudadoUseCase(get()) }
+    factory { LiquidarDeudaUseCase(get(), get()) }
     factory { VerDetalleDeudaUseCase(get()) }
 
 

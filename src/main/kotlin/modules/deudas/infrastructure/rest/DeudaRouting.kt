@@ -13,15 +13,15 @@ import org.koin.ktor.ext.inject
 
 fun Route.deudaRouting() {
 
-    val registrarDeudaUseCase by inject<RegistrarDeudaUseCase>()
     val listarDeudasUsuarioUseCase by inject<ListarDeudasUsuarioUseCase>()
+    val obtenerTotalAdeudadoUseCase by inject<ObtenerTotalAdeudadoUseCase>()
+    val liquidarDeudaUseCase by inject<LiquidarDeudaUseCase>()
     val verDetalleDeudaUseCase by inject<VerDetalleDeudaUseCase>()
     val listarAbonosPorDeudaUseCase by inject<ListarAbonosPorDeudaUseCase>()
     val categoriaRepository by inject<CategoriaRepository>()
 
     authenticate("auth-jwt") {
         route("/deudas") {
-
 
             get {
                 val principal = call.principal<JWTPrincipal>()!!
@@ -37,18 +37,34 @@ fun Route.deudaRouting() {
                 call.respond(HttpStatusCode.OK, response)
             }
 
-
-            post {
+            get("/total-adeudado") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val idUsuario = principal.payload.getClaim("id").asInt()
 
-                val request = call.receive<DeudaRequest>()
-                val deuda = registrarDeudaUseCase.ejecutar(request.toDomain(idUsuario))
+                val resumen = obtenerTotalAdeudadoUseCase.ejecutar(idUsuario)
 
-                val categoriaNombre = categoriaRepository.obtenerNombrePorId(deuda.idCategoria)
-
-                call.respond(HttpStatusCode.Created, deuda.toResponse(categoriaNombre, emptyList()))
+                call.respond(HttpStatusCode.OK, resumen)
             }
+
+            post("/{idDeuda}/liquidar") {
+                val principal = call.principal<JWTPrincipal>()!!
+                val idUsuario = principal.payload.getClaim("id").asInt()
+
+                val idDeuda = call.parameters["idDeuda"]?.toIntOrNull()
+                    ?: return@post call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "ID invÃ¡lido")
+                    )
+
+                val abono = liquidarDeudaUseCase.ejecutar(idDeuda, idUsuario)
+                    ?: return@post call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "No se pudo liquidar la deuda")
+                    )
+
+                call.respond(HttpStatusCode.OK, abono.toResponse())
+            }
+
 
 
             get("/{idDeuda}") {

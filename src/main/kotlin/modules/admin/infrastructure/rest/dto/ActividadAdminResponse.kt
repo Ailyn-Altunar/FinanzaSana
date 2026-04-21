@@ -6,18 +6,19 @@ import java.time.format.DateTimeFormatter
 
 @Serializable
 data class ActividadAdminResponse(
-    val usuario: String,
-    val accion: String,
+    val nombreUsuario: String,
+    val montoAbono: Double,
+    val idDeuda: Int,
     val fecha: String
 )
 
 fun ActividadAdmin.toResponse(): ActividadAdminResponse {
-
     val formatter = DateTimeFormatter.ISO_DATE_TIME
 
     return ActividadAdminResponse(
-        usuario = usuario,
-        accion = accion,
+        nombreUsuario = nombreUsuario,
+        montoAbono = montoAbono,
+        idDeuda = idDeuda,
         fecha = fecha.format(formatter)
     )
 }

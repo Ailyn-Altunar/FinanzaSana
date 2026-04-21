@@ -11,6 +11,7 @@ object UsuarioTable : Table("usuarios") {
     val contrasena = varchar("contrasena", 255)
     val idRol = integer("id_rol").references(RolTable.idRol)
     val telefono = varchar("telefono", 20)
+    val activo = bool("activo").default(true)
 
     override val primaryKey = PrimaryKey(id)
 }

@@ -24,17 +24,17 @@ class RegistrarUsuarioUseCase(
 
         if (idRol != 1 && idRol != 2) return null
 
+        val contrasenaHasheada = BCrypt.hashpw(contrasena, BCrypt.gensalt())
         val existente = usuarioRepository.verPorEmail(email)
         if (existente != null) return null
-
-        val contrasenaHasheada = BCrypt.hashpw(contrasena, BCrypt.gensalt())
 
         val usuario = Usuario(
             nombre = nombre,
             email = email,
             contrasena = contrasenaHasheada,
             idRol = 2,
-            telefono = telefono
+            telefono = telefono,
+            activo = true
         )
 
 

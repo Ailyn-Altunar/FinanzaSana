@@ -4,6 +4,9 @@ import com.finanzasana.modules.catalogoRol.infrastructure.persistence.RolTable
 import com.finanzasana.modules.categorias.infrastructure.persistence.CategoriaTable
 import com.finanzasana.modules.deudas.infrastructure.persistence.AbonoTable
 import com.finanzasana.modules.deudas.infrastructure.persistence.DeudaTable
+import com.finanzasana.modules.empresas.infrastructure.persistence.EmpresaPrestamoTable
+import com.finanzasana.modules.estados.infrastructure.persistence.EstadoSolicitudTable
+import com.finanzasana.modules.solicitudes.infrastructure.persistence.SolicitudPrestamoTable
 import com.finanzasana.modules.usuarios.infrastructure.persistence.UsuarioTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -32,12 +35,15 @@ object DatabaseFactory {
         Database.connect(dataSource)
 
         transaction {
-            SchemaUtils.create(
+            SchemaUtils.createMissingTablesAndColumns(
                 UsuarioTable,
                 RolTable,
                 CategoriaTable,
                 DeudaTable,
-                AbonoTable
+                AbonoTable,
+                EmpresaPrestamoTable,
+                EstadoSolicitudTable,
+                SolicitudPrestamoTable
 
             )
         }

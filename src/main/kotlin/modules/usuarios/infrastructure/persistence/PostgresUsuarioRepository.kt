@@ -22,7 +22,8 @@ class PostgresUsuarioRepository : UsuarioRepository {
         email = row[UsuarioTable.email],
         contrasena = row[UsuarioTable.contrasena],
         idRol = row[UsuarioTable.idRol],
-        telefono = row[UsuarioTable.telefono]
+        telefono = row[UsuarioTable.telefono],
+        activo = row[UsuarioTable.activo]
     )
 
     override suspend fun verPorId(id: Int): Usuario? = newSuspendedTransaction {
@@ -48,6 +49,7 @@ class PostgresUsuarioRepository : UsuarioRepository {
             it[contrasena] = usuario.contrasena
             it[idRol] = usuario.idRol
             it[telefono] = usuario.telefono
+            it[activo] = usuario.activo
         }[UsuarioTable.id]
 
         UsuariosConRoles()
@@ -61,14 +63,18 @@ class PostgresUsuarioRepository : UsuarioRepository {
         val filasAfectadas = UsuarioTable.update({ UsuarioTable.id eq id }) {
             it[nombre] = usuario.nombre
             it[email] = usuario.email
+            it[contrasena] = usuario.contrasena
             it[idRol] = usuario.idRol
             it[telefono] = usuario.telefono
+            it[activo] = usuario.activo
         }
         if (filasAfectadas > 0) verPorId(id) else null
     }
 
     override suspend fun eliminar(id: Int): Boolean = newSuspendedTransaction {
-        UsuarioTable.deleteWhere { UsuarioTable.id eq id } > 0
+        UsuarioTable.update({ UsuarioTable.id eq id }) {
+            it[activo] = false
+        } > 0
     }
 
     override suspend fun listar(): List<Usuario> = newSuspendedTransaction {

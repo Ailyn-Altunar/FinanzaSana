@@ -16,6 +16,8 @@ class LoginUseCase(
         val usuario = usuarioRepository.verPorEmail(email)
             ?: return null
 
+        if (!usuario.activo) return null
+
         val contrasenaValida = BCrypt.checkpw(contrasena, usuario.contrasena)
         if (!contrasenaValida) return null
 

@@ -9,8 +9,6 @@ val usuarioModule = module {
 
     factory { LoginUseCase(get()) }
     factory { RegistrarUsuarioUseCase(get()) }
-    factory { VerPerfilUseCase(get()) }
-    factory { VerUsuariosAdminUseCase(get()) }
     factory { EliminarUsuarioUseCase(get()) }
 
 

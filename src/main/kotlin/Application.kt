@@ -7,7 +7,6 @@ import com.finanzasana.modules.admin.infrastructure.rest.adminRouting
 import com.finanzasana.modules.usuarios.usuarioModule
 import com.finanzasana.modules.catalogoRol.rolModule
 import com.finanzasana.modules.deudas.DeudaModule
-import com.finanzasana.modules.catalogoRol.infrastructure.rest.rolRouting
 import com.finanzasana.modules.deudas.infrastructure.rest.abonoRouting
 import com.finanzasana.modules.deudas.infrastructure.rest.deudaRouting
 import com.finanzasana.modules.usuarios.infrastructure.rest.usuarioRouting
@@ -19,8 +18,13 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import com.finanzasana.modules.categorias.categoriaModule
 import com.finanzasana.modules.categorias.infrastructure.rest.categoriaRouting
+import com.finanzasana.modules.empresas.empresaPrestamoModule
+import com.finanzasana.modules.empresas.infrastructure.rest.empresaPrestamoRouting
+import com.finanzasana.modules.estados.estadoSolicitudModule
 import com.finanzasana.modules.planificador.PlanificadorModule
 import com.finanzasana.modules.planificador.infrastructure.rest.planificadorRouting
+import com.finanzasana.modules.solicitudes.infrastructure.rest.solicitudPrestamoRouting
+import com.finanzasana.modules.solicitudes.solicitudPrestamoModule
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
@@ -37,7 +41,10 @@ fun Application.module() {
             DeudaModule,
             categoriaModule,
             adminModule,
-            PlanificadorModule
+            PlanificadorModule,
+            solicitudPrestamoModule,
+            estadoSolicitudModule,
+            empresaPrestamoModule
 
         )
     }
@@ -53,12 +60,13 @@ fun Application.module() {
 
     routing {
         usuarioRouting()
-        rolRouting()
         deudaRouting()
         abonoRouting()
         categoriaRouting()
         adminRouting()
         planificadorRouting()
+        empresaPrestamoRouting()
+        solicitudPrestamoRouting()
     }
 }
 fun main() {
