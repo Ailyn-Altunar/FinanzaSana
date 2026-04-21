@@ -8,7 +8,7 @@ group = "com.finanzasana"
 version = "0.0.1"
 
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass.set("com.finanzasana.ApplicationKt")
 }
 
 kotlin {
@@ -45,9 +45,20 @@ dependencies {
     implementation(libs.bcrypt)
     implementation(libs.jwt.auth0)
 
+     implementation("io.ktor:ktor-server-cors:2.3.12")
+
     // Testing
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
     implementation("org.jetbrains.exposed:exposed-java-time:0.50.1")
-
+    implementation("io.ktor:ktor-server-cors:2.3.12")
+}
+tasks.shadowJar {
+    archiveClassifier.set("all")
+    manifest {
+        attributes(
+            "Main-Class" to "com.finanzasana.ApplicationKt"
+        )
+    }
+    mergeServiceFiles()
 }

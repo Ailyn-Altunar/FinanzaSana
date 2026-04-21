@@ -25,8 +25,11 @@ import com.finanzasana.modules.planificador.PlanificadorModule
 import com.finanzasana.modules.planificador.infrastructure.rest.planificadorRouting
 import com.finanzasana.modules.solicitudes.infrastructure.rest.solicitudPrestamoRouting
 import com.finanzasana.modules.solicitudes.solicitudPrestamoModule
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.cors.routing.CORS
 
 
 fun Application.module() {
@@ -56,6 +59,19 @@ fun Application.module() {
 
 
     configureSecurity()
+    install(CORS) {
+        anyHost()
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Get)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowNonSimpleContentTypes = true
+        allowCredentials = true
+    }
 
 
     routing {
@@ -70,7 +86,7 @@ fun Application.module() {
     }
 }
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") { // <--- 0.0.0.0 permite conexiones externas
+    embeddedServer(Netty, port = 8081, host = "0.0.0.0") { // <--- 0.0.0.0 permite conexiones externas
         module()
     }.start(wait = true)
 }
