@@ -39,6 +39,7 @@ dependencies {
     // Base de datos
     implementation(libs.postgresql)
     implementation(libs.hikaricp)
+    implementation("io.github.cdimascio:dotenv-java:3.0.0")
 
     // Seguridad
     implementation(libs.bcrypt)

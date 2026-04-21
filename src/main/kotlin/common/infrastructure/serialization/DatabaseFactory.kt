@@ -13,18 +13,20 @@ import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import io.github.cdimascio.dotenv.Dotenv
 
 object DatabaseFactory {
 
     fun init() {
+        val dotenv = Dotenv.configure().ignoreIfMissing().load()
         val config = HikariConfig().apply {
             driverClassName = "org.postgresql.Driver"
 
-            jdbcUrl = System.getenv("DB_URL")
+            jdbcUrl = dotenv.get("DB_URL") ?: System.getenv("DB_URL")
                 ?: "jdbc:postgresql://localhost:5432/finanzasana"
 
-            username = System.getenv("DB_USER") ?: "postgres"
-            password = System.getenv("DB_PASSWORD") ?: "lyn250319"
+            username = dotenv.get("DB_USER") ?: System.getenv("DB_USER") ?: "postgres"
+            password = dotenv.get("DB_PASSWORD") ?: System.getenv("DB_PASSWORD") ?: "lyn250319"
 
             maximumPoolSize = 10
             isAutoCommit = false
